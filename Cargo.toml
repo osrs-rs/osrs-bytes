@@ -1,0 +1,17 @@
+[package]
+name = "osrs-buffer"
+version = "0.0.0"
+edition = "2021"
+description = "A buffer for the data types in Oldschool Runescape."
+repository = "https://github.com/runecore/osrs-buffer"
+license = "MIT"
+keywords = ["osrs","runescape","buffer"]
+categories = ["development-tools"]
+readme = "README.md"
+exclude = [
+    ".github/*",
+    ".gitignore",
+]
+
+[dependencies]
+byteorder = "1"
