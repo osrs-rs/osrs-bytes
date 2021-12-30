@@ -544,7 +544,6 @@ impl ByteBuffer {
     /// let mut buf = ByteBuffer::new(3);
     /// buf.write_bytes_reversed_add(&other_buf);
     ///
-    ///
     /// assert_eq!(buf.data[0], 131);
     /// assert_eq!(buf.data[1], 130);
     /// assert_eq!(buf.data[2], 129);
@@ -570,10 +569,10 @@ impl ByteBuffer {
     /// other_buf.data[1] = 54;
     /// other_buf.data[2] = 31;
     ///
-    /// // Create the buffer which should read the bytes from the other buffer, and pass it to read_bytes(...) along with the length
+    /// // Create the buffer which should read the bytes from the other buffer,
+    /// // and pass it to read_bytes(...) along with the length
     /// let mut buf = ByteBuffer::new(3);
     /// other_buf.read_bytes(&mut buf, 3);
-    ///
     ///
     /// assert_eq!(buf.data[0], 99);
     /// assert_eq!(buf.data[1], 54);
