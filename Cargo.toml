@@ -1,6 +1,6 @@
 [package]
 name = "osrs-buffer"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2021"
 description = "A buffer for the data types in Oldschool Runescape."
 repository = "https://github.com/runecore/osrs-buffer"
