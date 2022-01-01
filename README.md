@@ -4,6 +4,7 @@
 [![API](https://docs.rs/osrs-buffer/badge.svg)](https://docs.rs/osrs-buffer)
 [![Crate](https://img.shields.io/crates/v/osrs-buffer)](https://crates.io/crates/osrs-buffer)
 [![dependency status](https://deps.rs/repo/github/runecore/osrs-buffer/status.svg)](https://deps.rs/repo/github/runecore/osrs-buffer)
+[![Discord](https://img.shields.io/discord/926860365873184768?color=5865F2)](https://discord.gg/CcTa7TZfSc)
 
 A buffer for Oldschool Runescape data types.
 
