@@ -183,7 +183,7 @@ impl ByteBuffer {
         self.write_u8(val as u8);
     }
 
-    /// Writes the value 128 subtracted by the signed byte to the buffer, increasing the writing position by 1.
+    /// Writes the number 128, subtracted by the signed byte to the buffer, increasing the writing position by 1.
     ///
     /// # Examples
     ///
@@ -199,6 +199,42 @@ impl ByteBuffer {
     /// ```
     pub fn write_i8_sub(&mut self, val: i8) {
         self.write_u8(128 - val as u8);
+    }
+
+    /// Writes the byte and adds 128 to it, increasing the writing position by 1.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(1);
+    /// buf.write_i8_add(42);
+    ///
+    /// assert_eq!(buf.data[0], 170);
+    /// assert_eq!(buf.write_pos, 1);
+    ///
+    /// ```
+    pub fn write_i8_add(&mut self, val: i8) {
+        self.write_u8(val as u8 + 128);
+    }
+
+    /// Writes a negated byte to the buffer, increasing the writing position by 1.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(1);
+    /// buf.write_i8_neg(55);
+    ///
+    /// assert_eq!(buf.data[0], 201);
+    /// assert_eq!(buf.write_pos, 1);
+    ///
+    /// ```
+    pub fn write_i8_neg(&mut self, val: i8) {
+        self.write_u8(-val as u8);
     }
 
     /// Writes an unsigned short to the buffer, increasing the writing position by 2.
@@ -439,6 +475,54 @@ impl ByteBuffer {
     pub fn write_i32_ime(&mut self, val: i32) {
         self.write_i16(val as i16);
         self.write_i16((val >> 16) as i16);
+    }
+
+    /// Writes am unsigned integer as little endian to the buffer, increasing the writing position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.write_u32_le(26904);
+    ///
+    /// assert_eq!(buf.data[0], 24);
+    /// assert_eq!(buf.data[1], 105);
+    /// assert_eq!(buf.data[2], 0);
+    /// assert_eq!(buf.data[3], 0);
+    /// assert_eq!(buf.write_pos, 4);
+    ///
+    /// ```
+    ///
+    pub fn write_u32_le(&mut self, val: u32) {
+        let mut buf = [0; 4];
+
+        LittleEndian::write_u32(&mut buf, val);
+
+        self.write_bytes(&buf);
+    }
+
+    /// Writes a signed integer as little endian to the buffer, increasing the writing position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.write_i32_le(18879);
+    ///
+    /// assert_eq!(buf.data[0], 191);
+    /// assert_eq!(buf.data[1], 73);
+    /// assert_eq!(buf.data[2], 0);
+    /// assert_eq!(buf.data[3], 0);
+    /// assert_eq!(buf.write_pos, 4);
+    ///
+    /// ```
+    ///
+    pub fn write_i32_le(&mut self, val: i32) {
+        self.write_u32_le(val as u32);
     }
 
     /// Writes an unsigned qword to the buffer, increasing the writing position by 8.
