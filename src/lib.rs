@@ -688,6 +688,7 @@ impl ByteBuffer {
     /// buf.data[0] = 1;
     ///
     /// assert_eq!(buf.read_bool(), true);
+    /// assert_eq!(buf.read_pos, 1);
     ///
     /// ```
     pub fn read_bool(&mut self) -> bool {
@@ -710,7 +711,7 @@ impl ByteBuffer {
     /// buf.data[0] = 231;
     ///
     /// assert_eq!(buf.read_u8(), 231);
-    ///
+    /// assert_eq!(buf.read_pos, 1);
     /// ```
     pub fn read_u8(&mut self) -> u8 {
         let value = self
@@ -732,6 +733,7 @@ impl ByteBuffer {
     /// buf.data[0] = 6;
     ///
     /// assert_eq!(buf.read_i8(), 6);
+    /// assert_eq!(buf.read_pos, 1);
     ///
     /// ```
     pub fn read_i8(&mut self) -> i8 {
@@ -750,6 +752,7 @@ impl ByteBuffer {
     /// buf.data[1] = 89;
     ///
     /// assert_eq!(buf.read_u16(), 16985);
+    /// assert_eq!(buf.read_pos, 2);
     ///
     /// ```
     pub fn read_u16(&mut self) -> u16 {
@@ -773,10 +776,130 @@ impl ByteBuffer {
     /// buf.data[1] = 98;
     ///
     /// assert_eq!(buf.read_i16(), -158);
+    /// assert_eq!(buf.read_pos, 2);
     ///
     /// ```
     pub fn read_i16(&mut self) -> i16 {
         self.read_u16() as i16
+    }
+
+    /// Reads an unsigned short as little endian from the buffer, increasing the reading position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(2);
+    /// buf.data[0] = 89;
+    /// buf.data[1] = 66;
+    ///
+    /// assert_eq!(buf.read_u16_le(), 16985);
+    /// assert_eq!(buf.read_pos, 2);
+    ///
+    /// ```
+    pub fn read_u16_le(&mut self) -> u16 {
+        let bytes = self
+            .data
+            .get(self.read_pos..self.read_pos + 2)
+            .expect("failed reading 2 bytes for u16");
+        self.read_pos += 2;
+        LittleEndian::read_u16(bytes)
+    }
+
+    /// Reads a signed short as little endian from the buffer, increasing the reading position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(2);
+    /// buf.data[0] = 98;
+    /// buf.data[1] = 255;
+    ///
+    /// assert_eq!(buf.read_i16_le(), -158);
+    /// assert_eq!(buf.read_pos, 2);
+    ///
+    /// ```
+    pub fn read_i16_le(&mut self) -> i16 {
+        self.read_u16_le() as i16
+    }
+
+    /// Reads an unsigned short add from the buffer, increasing the reading position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(2);
+    /// buf.data[0] = 99;
+    /// buf.data[1] = 130;
+    ///
+    /// assert_eq!(buf.read_u16_add(), 25346);
+    /// assert_eq!(buf.read_pos, 2);
+    ///
+    /// ```
+    pub fn read_u16_add(&mut self) -> u16 {
+        ((self.read_u8() as u16) << 8) | ((self.read_u8().wrapping_sub(128)) as u16)
+    }
+
+    /// Reads a signed short add from the buffer, increasing the reading position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(2);
+    /// buf.data[0] = 253;
+    /// buf.data[1] = 177;
+    ///
+    /// assert_eq!(buf.read_i16_add(), -719);
+    /// assert_eq!(buf.read_pos, 2);
+    ///
+    /// ```
+    pub fn read_i16_add(&mut self) -> i16 {
+        self.read_u16_add() as i16
+    }
+
+    /// Reads an unsigned short add as little endian from the buffer, increasing the reading position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(2);
+    /// buf.data[0] = 89;
+    /// buf.data[1] = 66;
+    ///
+    /// assert_eq!(buf.read_u16_add_le(), 17113);
+    /// assert_eq!(buf.read_pos, 2);
+    ///
+    /// ```
+    pub fn read_u16_add_le(&mut self) -> u16 {
+        ((self.read_u8().wrapping_sub(128)) as u16) | ((self.read_u8() as u16) << 8)
+    }
+
+    /// Reads a signed short add as little endia from the buffer, increasing the reading position by 2.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(2);
+    /// buf.data[0] = 98;
+    /// buf.data[1] = 255;
+    ///
+    /// assert_eq!(buf.read_i16_add_le(), -30);
+    /// assert_eq!(buf.read_pos, 2);
+    ///
+    /// ```
+    pub fn read_i16_add_le(&mut self) -> i16 {
+        self.read_u16_add_le() as i16
     }
 
     /// Reads an unsigned dword from the buffer, increasing the reading position by 4.
@@ -793,6 +916,7 @@ impl ByteBuffer {
     /// buf.data[3] = 16;
     ///
     /// assert_eq!(buf.read_u32(), 710353168);
+    /// assert_eq!(buf.read_pos, 4);
     ///
     /// ```
     pub fn read_u32(&mut self) -> u32 {
@@ -818,10 +942,79 @@ impl ByteBuffer {
     /// buf.data[3] = 16;
     ///
     /// assert_eq!(buf.read_i32(), -11067120);
+    /// assert_eq!(buf.read_pos, 4);
     ///
     /// ```
     pub fn read_i32(&mut self) -> i32 {
         self.read_u32() as i32
+    }
+
+    /// Reads an unsigned dword from the buffer, increasing the reading position by 4.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.data[0] = 16;
+    /// buf.data[1] = 33;
+    /// buf.data[2] = 87;
+    /// buf.data[3] = 42;
+    ///
+    /// assert_eq!(buf.read_u32_le(), 710353168);
+    /// assert_eq!(buf.read_pos, 4);
+    ///
+    /// ```
+    pub fn read_u32_le(&mut self) -> u32 {
+        let bytes = self
+            .data
+            .get(self.read_pos..self.read_pos + 4)
+            .expect("failed reading 4 bytes for u32");
+        self.read_pos += 4;
+        LittleEndian::read_u32(bytes)
+    }
+
+    /// Reads a signed dword from the buffer, increasing the reading position by 4.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.data[0] = 16;
+    /// buf.data[1] = 33;
+    /// buf.data[2] = 87;
+    /// buf.data[3] = 250;
+    ///
+    /// assert_eq!(buf.read_i32_le(), -94953200);
+    /// assert_eq!(buf.read_pos, 4);
+    ///
+    /// ```
+    pub fn read_i32_le(&mut self) -> i32 {
+        self.read_u32_le() as i32
+    }
+
+    /// Reads an unsigned dword as inversed middle endian from the buffer, increasing the reading position by 4.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.data[0] = 0;
+    /// buf.data[1] = 0;
+    /// buf.data[2] = 0;
+    /// buf.data[3] = 149;
+    ///
+    /// assert_eq!(buf.read_u32_ime(), 9764864);
+    /// assert_eq!(buf.read_pos, 4);
+    ///
+    /// ```
+    pub fn read_u32_ime(&mut self) -> u32 {
+        (self.read_u16() as u32) | ((self.read_u16() as u32) << 16)
     }
 
     /// Reads an unsigned qword from the buffer, increasing the reading position by 8.
@@ -842,6 +1035,7 @@ impl ByteBuffer {
     /// buf.data[7] = 36;
     ///
     /// assert_eq!(buf.read_u64(), 2257441833804914212);
+    /// assert_eq!(buf.read_pos, 8);
     ///
     /// ```
     pub fn read_u64(&mut self) -> u64 {
@@ -871,6 +1065,7 @@ impl ByteBuffer {
     /// buf.data[7] = 36;
     ///
     /// assert_eq!(buf.read_i64(), -48401175408779740);
+    /// assert_eq!(buf.read_pos, 8);
     ///
     /// ```
     pub fn read_i64(&mut self) -> i64 {
@@ -895,6 +1090,7 @@ impl ByteBuffer {
     /// buf.data[7] = 0;
     ///
     /// assert_eq!(buf.read_string(), "my test");
+    /// assert_eq!(buf.read_pos, 7);
     ///
     /// ```
     pub fn read_string(&mut self) -> String {
