@@ -14,7 +14,7 @@ Add this to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-osrs-buffer = "0.1.0"
+osrs-buffer = "0.3.0"
 ```
 
 ## Example
