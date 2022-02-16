@@ -996,6 +996,48 @@ impl ByteBuffer {
         self.read_u32_le() as i32
     }
 
+    /// Reads an unsigned dword as middle endian from the buffer, increasing the reading position by 4.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.data[0] = 1;
+    /// buf.data[1] = 5;
+    /// buf.data[2] = 9;
+    /// buf.data[3] = 49;
+    ///
+    /// assert_eq!(buf.read_u32_me(), 83964169);
+    /// assert_eq!(buf.read_pos, 4);
+    ///
+    /// ```
+    pub fn read_u32_me(&mut self) -> u32 {
+        (self.read_u16_le() as u32) << 16 | (self.read_u16_le() as u32)
+    }
+
+    /// Reads a signed dword as middle endian from the buffer, increasing the reading position by 4.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.data[0] = 0;
+    /// buf.data[1] = 149;
+    /// buf.data[2] = 0;
+    /// buf.data[3] = 0;
+    ///
+    /// assert_eq!(buf.read_i32_me(), -1795162112);
+    /// assert_eq!(buf.read_pos, 4);
+    ///
+    /// ```
+    pub fn read_i32_me(&mut self) -> i32 {
+        self.read_u32_me() as i32
+    }
+
     /// Reads an unsigned dword as inversed middle endian from the buffer, increasing the reading position by 4.
     ///
     /// # Examples
@@ -1015,6 +1057,27 @@ impl ByteBuffer {
     /// ```
     pub fn read_u32_ime(&mut self) -> u32 {
         (self.read_u16() as u32) | ((self.read_u16() as u32) << 16)
+    }
+
+    /// Reads a signed dword as inversed middle endian from the buffer, increasing the reading position by 4.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
+    /// buf.data[0] = 118;
+    /// buf.data[1] = 195;
+    /// buf.data[2] = 254;
+    /// buf.data[3] = 193;
+    ///
+    /// assert_eq!(buf.read_i32_ime(), -20875581);
+    /// assert_eq!(buf.read_pos, 4);
+    ///
+    /// ```
+    pub fn read_i32_ime(&mut self) -> i32 {
+        self.read_u32_ime() as i32
     }
 
     /// Reads an unsigned qword from the buffer, increasing the reading position by 8.
