@@ -1,15 +1,14 @@
 [package]
 name = "osrs-buffer"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 description = "A buffer for the data types in Oldschool Runescape."
 repository = "https://github.com/runecore/osrs-buffer"
 license = "MIT"
 keywords = ["osrs","runescape","buffer"]
 categories = ["development-tools"]
-readme = "README.md"
+readme = ".github/readme.md"
 exclude = [
-    ".github/*",
     ".gitignore",
 ]
 

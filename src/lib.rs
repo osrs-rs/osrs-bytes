@@ -462,6 +462,29 @@ impl ByteBuffer {
     /// use osrs_buffer::ByteBuffer;
     ///
     /// let mut buf = ByteBuffer::new(4);
+    /// buf.write_i32_me(-98231);
+    ///
+    /// assert_eq!(buf.data[0], 254);
+    /// assert_eq!(buf.data[1], 255);
+    /// assert_eq!(buf.data[2], 73);
+    /// assert_eq!(buf.data[3], 128);
+    /// assert_eq!(buf.write_pos, 4);
+    ///
+    /// ```
+    ///
+    pub fn write_i32_me(&mut self, val: i32) {
+        self.write_i16_le((val >> 16) as i16);
+        self.write_i16_le(val as i16);
+    }
+
+    /// Writes a signed dword as an inversed middle endian to the buffer, increasing the writing position by 4.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use osrs_buffer::ByteBuffer;
+    ///
+    /// let mut buf = ByteBuffer::new(4);
     /// buf.write_i32_ime(-98231);
     ///
     /// assert_eq!(buf.data[0], 128);
