@@ -21,12 +21,19 @@ osrs-buffer = "0.6.0"
 
 ```rust
 use osrs_buffer::{ReadExt, WriteExt};
+use std::io::{self, Cursor};
 
-fn main() {
+fn main() -> Result<(), io::Error> {
+    // Read data from the cursor
+    let mut csr = Cursor::new(vec![123]);
+    assert_eq!(csr.read_i8()?, 123);
+
+    // Write data to the vector
     let mut vec = Vec::new();
-    vec.write_i8(123);
+    vec.write_i8(124)?;
+    assert_eq!(vec[0], 124);
 
-    assert_eq!(vec.read_i8(), 123);
+    Ok(())
 }
 ```
 
