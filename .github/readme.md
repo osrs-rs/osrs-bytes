@@ -14,28 +14,26 @@ Add this to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-osrs-buffer = "0.5.0"
+osrs-buffer = "0.6.0"
 ```
 
 ## Example
 
 ```rust
-use osrs_buffer::ByteBuffer;
+use osrs_buffer::{ReadExt, WriteExt};
 
 fn main() {
-    let mut buf = ByteBuffer::new(1);
-    buf.write_i8(123);
+    let mut vec = Vec::new();
+    vec.write_i8(123);
 
-    assert_eq!(buf.read_i8(), 123);
+    assert_eq!(vec.read_i8(), 123);
 }
 ```
 
-## Contributing
-
-This repository is open for contributions. For bigger changes it is advised to [open an issue](https://github.com/runecore/osrs-buffer/issues/new) to discuss these matters.
-
 ## License
 
-`osrs-buffer` is distributed under the terms of the MIT license.
+This project is licensed under the [MIT license](license-mit).
 
-See [LICENSE](LICENSE) for details.
+## Contributing
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in `osrs-buffer` by you, shall be licensed as MIT, without any additional terms or conditions.
