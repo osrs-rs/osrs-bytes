@@ -8,13 +8,17 @@
 
 A buffer for Oldschool Runescape data types.
 
+## Deprecated
+
+This crate has been deprecated in favor of [osrs-bytes](https://github.com/osrs-rs/osrs-bytes). `osrs-buffer` will not be updated anymore.
+
 ## Installation
 
 Add this to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-osrs-buffer = "0.6.0"
+osrs-buffer = "0.7.0"
 ```
 
 ## Example
