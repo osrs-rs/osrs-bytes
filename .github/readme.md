@@ -14,7 +14,7 @@ This crate has been deprecated in favor of [osrs-bytes](https://github.com/osrs-
 
 ## Installation
 
-Add this to your `Cargo.toml` file:
+Add this crate as a dependency to your `Cargo.toml` file.
 
 ```toml
 [dependencies]
