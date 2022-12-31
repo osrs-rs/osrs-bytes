@@ -1,6 +1,6 @@
 //! A Rust library for working with the Oldschool Runescape data types.
 //!
-//! Data types in Oldschool Runescape are slightly different compared to normal types. Example of these types are the smart type, middle endian, and occassional switching to little endian. Therefore it has been seen as necessary to have a buffer that can work with these data types.
+//! Data types in Oldschool Runescape are slightly different compared to normal types. Example of these types are the smart type, middle endian, and occassional switching to little endian. Therefore it has been seen as necessary to have traits that can work with these data types.
 //!
 //! This crate provides Read and Write extensions for working with the data types on any data structure implementing `&[u8]` such as Vec, Cursor etc.
 
@@ -13,7 +13,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![2, 5]);
     /// assert_eq!(rdr.read_u8().unwrap(), 2);
@@ -32,7 +32,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![248, 6]);
     /// assert_eq!(rdr.read_i8().unwrap(), -8);
@@ -49,7 +49,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![0, 1, 2]);
     /// assert_eq!(rdr.read_bool().unwrap(), false);
@@ -69,7 +69,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![66, 89]);
     /// assert_eq!(rdr.read_u16().unwrap(), 16985);
@@ -87,7 +87,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![89, 66]);
     /// assert_eq!(rdr.read_u16_le().unwrap(), 16985);
@@ -105,7 +105,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![99, 130]);
     /// assert_eq!(rdr.read_u16_add().unwrap(), 25346);
@@ -121,7 +121,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![89, 66]);
     /// assert_eq!(rdr.read_u16_add_le().unwrap(), 17113);
@@ -137,7 +137,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![255, 98]);
     /// assert_eq!(rdr.read_i16().unwrap(), -158);
@@ -153,7 +153,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![98, 255]);
     /// assert_eq!(rdr.read_i16_le().unwrap(), -158);
@@ -169,7 +169,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![253, 177]);
     /// assert_eq!(rdr.read_i16_add().unwrap(), -719);
@@ -185,7 +185,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![98, 255]);
     /// assert_eq!(rdr.read_i16_add_le().unwrap(), -30);
@@ -201,7 +201,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![42, 87, 33, 16]);
     /// assert_eq!(rdr.read_u32().unwrap(), 710353168);
@@ -219,7 +219,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![16, 33, 87, 42]);
     /// assert_eq!(rdr.read_u32_le().unwrap(), 710353168);
@@ -237,7 +237,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![1, 5, 9, 49]);
     /// assert_eq!(rdr.read_u32_me().unwrap(), 83964169);
@@ -254,7 +254,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![0, 0, 0, 149]);
     /// assert_eq!(rdr.read_u32_ime().unwrap(), 9764864);
@@ -271,7 +271,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![255, 87, 33, 16]);
     /// assert_eq!(rdr.read_i32().unwrap(), -11067120);
@@ -287,7 +287,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![16, 33, 87, 250]);
     /// assert_eq!(rdr.read_i32_le().unwrap(), -94953200);
@@ -303,7 +303,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![0, 149, 0, 0]);
     /// assert_eq!(rdr.read_i32_me().unwrap(), -1795162112);
@@ -320,7 +320,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![118, 195, 254, 193]);
     /// assert_eq!(rdr.read_i32_ime().unwrap(), -20875581);
@@ -337,7 +337,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![31, 84, 11, 99, 45, 12, 94, 36]);
     /// assert_eq!(rdr.read_u64().unwrap(), 2257441833804914212);
@@ -355,7 +355,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![255, 84, 11, 99, 45, 12, 94, 36]);
     /// assert_eq!(rdr.read_i64().unwrap(), -48401175408779740);
@@ -371,7 +371,7 @@ pub trait ReadExt: Read {
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use osrs_buffer::ReadExt;
+    /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![109, 121, 32, 116, 101, 115, 116, 0]);
     /// assert_eq!(rdr.read_string_cp1252().unwrap(), "my test");
@@ -410,7 +410,7 @@ pub trait WriteExt: Write {
     /// Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u8(42).unwrap();
@@ -426,7 +426,7 @@ pub trait WriteExt: Write {
     /// Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i8(-67).unwrap();
@@ -442,7 +442,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i8_sub(99).unwrap();
@@ -458,7 +458,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i8_add(42).unwrap();
@@ -474,7 +474,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i8_neg(55).unwrap();
@@ -490,7 +490,7 @@ pub trait WriteExt: Write {
     /// Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_bool(true).unwrap();
@@ -506,7 +506,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u16(20065).unwrap();
@@ -523,7 +523,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u16_le(29543).unwrap();
@@ -543,7 +543,7 @@ pub trait WriteExt: Write {
     /// Writing a value lesser than or equal to 127 makes it write out a single unsigned byte.
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u16_smart(65).unwrap();
@@ -554,7 +554,7 @@ pub trait WriteExt: Write {
     /// Writing a value greater than 127 will make it write out two unsigned bytes.
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u16_smart(986).unwrap();
@@ -579,7 +579,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i16(-14632).unwrap();
@@ -596,7 +596,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i16_le(-7654).unwrap();
@@ -613,7 +613,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i16_add(-9867).unwrap();
@@ -632,7 +632,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i16_le_add(-12632).unwrap();
@@ -651,7 +651,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u32(98571).unwrap();
@@ -671,7 +671,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u32_le(26904).unwrap();
@@ -691,7 +691,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i32(-131045).unwrap();
@@ -711,7 +711,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i32_le(18879).unwrap();
@@ -731,7 +731,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i32_me(-98231).unwrap();
@@ -752,7 +752,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i32_ime(-98231).unwrap();
@@ -773,7 +773,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_u64(8589934592).unwrap();
@@ -797,7 +797,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_i64(-8589934592).unwrap();
@@ -821,7 +821,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
     /// wtr.write_string_cp1252("hello").unwrap();
@@ -846,7 +846,7 @@ pub trait WriteExt: Write {
     /// # Examples
     ///
     /// ```rust
-    /// use osrs_buffer::WriteExt;
+    /// use osrs_bytes::WriteExt;
     ///
     /// let wtr1 = vec![1, 2, 3];
     ///

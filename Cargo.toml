@@ -1,11 +1,12 @@
 [package]
-name = "osrs-buffer"
-version = "0.6.0"
+name = "osrs-bytes"
+version = "0.0.0"
 edition = "2021"
-description = "A buffer for the data types in Oldschool Runescape."
-repository = "https://github.com/runecore/osrs-buffer"
+description = "Traits for working with bytes"
+repository = "https://github.com/osrs-rs/osrs-bytes"
+documentation = "https://docs.rs/osrs-bytes"
 license = "MIT"
-keywords = ["osrs","runescape","buffer"]
+keywords = ["osrs","runescape","traits"]
 categories = ["development-tools"]
 readme = ".github/readme.md"
 exclude = [

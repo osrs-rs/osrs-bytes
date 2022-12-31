@@ -1,6 +1,6 @@
 name: Rust
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -8,19 +8,23 @@ jobs:
 
     strategy:
         matrix:
-            os: [ubuntu-latest] # [ubuntu-latest, windows-latest, macos-latest]
+            os: [ubuntu-latest]
+            # Only test on ubuntu for the time being, the other are unnecessary
+            # os: [ubuntu-latest, windows-latest, macos-latest]
     
     steps:
       - uses: actions/checkout@v1
-      - uses: actions-rs/toolchain@v1
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
           components: rustfmt, clippy
+
       - name: Clippy
         run: cargo clippy
+
       - name: Build
         run: cargo build --verbose
+
       - name: Tests
         run: cargo test --verbose
