@@ -124,10 +124,10 @@ pub trait ReadExt: Read {
     /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![89, 66]);
-    /// assert_eq!(rdr.read_u16_add_le().unwrap(), 17113);
+    /// assert_eq!(rdr.read_u16_le_add().unwrap(), 17113);
     /// ```
     #[inline]
-    fn read_u16_add_le(&mut self) -> Result<u16> {
+    fn read_u16_le_add(&mut self) -> Result<u16> {
         Ok(((self.read_u8()?.wrapping_sub(128)) as u16) | ((self.read_u8()? as u16) << 8))
     }
 
@@ -188,11 +188,11 @@ pub trait ReadExt: Read {
     /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![98, 255]);
-    /// assert_eq!(rdr.read_i16_add_le().unwrap(), -30);
+    /// assert_eq!(rdr.read_i16_le_add().unwrap(), -30);
     /// ```
     #[inline]
-    fn read_i16_add_le(&mut self) -> Result<i16> {
-        Ok(self.read_u16_add_le()? as i16)
+    fn read_i16_le_add(&mut self) -> Result<i16> {
+        Ok(self.read_u16_le_add()? as i16)
     }
 
     /// Reads an unsigned dword as big endian
