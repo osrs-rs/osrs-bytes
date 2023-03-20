@@ -195,6 +195,70 @@ pub trait ReadExt: Read {
         Ok(self.read_u16_le_add()? as i16)
     }
 
+    /// Reads an unsigned medium as big endian
+    ///
+    /// # Examples
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![1, 2, 3]);
+    /// assert_eq!(rdr.read_u24().unwrap(), 66051);
+    /// ```
+    #[inline]
+    fn read_u24(&mut self) -> Result<u32> {
+        let mut buf = [0; 3];
+        self.read_exact(&mut buf)?;
+        Ok(u32::from_be_bytes([0, buf[0], buf[1], buf[2]]))
+    }
+
+    /// Reads an unsigned medium as little endian
+    ///
+    /// # Examples
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![3, 2, 1]);
+    /// assert_eq!(rdr.read_u24_le().unwrap(), 66051);
+    /// ```
+    #[inline]
+    fn read_u24_le(&mut self) -> Result<u32> {
+        let mut buf = [0; 3];
+        self.read_exact(&mut buf)?;
+        Ok(u32::from_le_bytes([buf[0], buf[1], buf[2], 0]))
+    }
+
+    /// Reads a signed medium as big endian
+    ///
+    /// # Examples
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![255, 255, 255]);
+    /// assert_eq!(rdr.read_i24().unwrap(), 16777215);
+    /// ```
+    #[inline]
+    fn read_i24(&mut self) -> Result<i32> {
+        Ok(self.read_u24()? as i32)
+    }
+
+    /// Reads a signed medium as little endian
+    ///
+    /// # Examples
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![255, 255, 255]);
+    /// assert_eq!(rdr.read_i24_le().unwrap(), 16777215);
+    /// ```
+    #[inline]
+    fn read_i24_le(&mut self) -> Result<i32> {
+        Ok(self.read_u24_le()? as i32)
+    }
+
     /// Reads an unsigned dword as big endian
     ///
     /// # Examples
