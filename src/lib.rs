@@ -99,6 +99,77 @@ pub trait ReadExt: Read {
         Ok(u16::from_le_bytes(buf))
     }
 
+    /// Reads an unsigned short as smart
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0]);
+    /// assert_eq!(rdr.read_u16_smart().unwrap(), 0);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x40]);
+    /// assert_eq!(rdr.read_u16_smart().unwrap(), 0x40);
+    /// ```
+    ///
+    /// Example with a value less than 128. Here we can see that the first byte is returned.
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x7F]);
+    /// assert_eq!(rdr.read_u16_smart().unwrap(), 0x7F);
+    /// ```
+    ///
+    /// Example where the first byte's value is 128 or greater.
+    /// 128 is the max value in a smart type.
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x80, 0x80]);
+    /// assert_eq!(rdr.read_u16_smart().unwrap(), 0x80);
+    /// ```
+    ///
+    /// Example where the first byte's value is 128 or greater.
+    /// This returns it as a short.
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xC0, 0x00]);
+    /// assert_eq!(rdr.read_u16_smart().unwrap(), 0x4000);
+    /// ```
+    ///
+    /// Example of the highest possible value for a smart type.
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xFF, 0xFF]);
+    /// assert_eq!(rdr.read_u16_smart().unwrap(), 0x7FFF);
+    /// ```
+    #[inline]
+    fn read_u16_smart(&mut self) -> Result<u16> {
+        let peek = self.read_u8()?;
+        if peek & 128 == 0 {
+            Ok(peek as u16)
+        } else {
+            Ok(((peek as u16 & 0x7F) << 8) | (self.read_u8()? as u16))
+        }
+    }
+
     /// Reads an unsigned short as big endian
     ///
     /// # Examples
@@ -161,6 +232,76 @@ pub trait ReadExt: Read {
     #[inline]
     fn read_i16_le(&mut self) -> Result<i16> {
         Ok(self.read_u16_le()? as i16)
+    }
+
+    /// Reads a signed short as smart
+    ///
+    /// # Examples
+    ///
+    /// Example with a value less than 128. Here we can see that the first byte is returned.
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0]);
+    /// assert_eq!(rdr.read_i16_smart().unwrap(), -64);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x40]);
+    /// assert_eq!(rdr.read_i16_smart().unwrap(), 0);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x7F]);
+    /// assert_eq!(rdr.read_i16_smart().unwrap(), 0x3F);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x80, 0x00]);
+    /// assert_eq!(rdr.read_i16_smart().unwrap(), -0x4000);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xBF, 0xBF]);
+    /// assert_eq!(rdr.read_i16_smart().unwrap(), -0x41);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xC0, 0x40]);
+    /// assert_eq!(rdr.read_i16_smart().unwrap(), 0x40);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xFF, 0xFF]);
+    /// assert_eq!(rdr.read_i16_smart().unwrap(), 0x3FFF);
+    /// ```
+    fn read_i16_smart(&mut self) -> Result<i16> {
+        let peek = self.read_u8()?;
+        if peek & 128 == 0 {
+            Ok(peek as i16 - 64)
+        } else {
+            Ok((((peek as i16 & 0x7F) << 8) | (self.read_u8()? as i16) & 0x7FFF) - 16384)
+        }
     }
 
     /// Reads a signed short add
