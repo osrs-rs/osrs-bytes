@@ -14,7 +14,7 @@ Add this crate as a dependency to your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-osrs-bytes = "0.2.0"
+osrs-bytes = "0.3.0"
 ```
 
 ## Example

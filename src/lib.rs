@@ -295,6 +295,7 @@ pub trait ReadExt: Read {
     /// let mut rdr = Cursor::new(vec![0xFF, 0xFF]);
     /// assert_eq!(rdr.read_i16_smart().unwrap(), 0x3FFF);
     /// ```
+    #[inline]
     fn read_i16_smart(&mut self) -> Result<i16> {
         let peek = self.read_u8()?;
         if peek & 128 == 0 {
@@ -418,6 +419,71 @@ pub trait ReadExt: Read {
         Ok(u32::from_be_bytes(buf))
     }
 
+    /// Read an unsigned dword as a smart
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x00, 0x00]);
+    /// assert_eq!(rdr.read_u32_smart().unwrap(), 0);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x40, 0x00]);
+    /// assert_eq!(rdr.read_u32_smart().unwrap(), 0x4000);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x7F, 0xFF]);
+    /// assert_eq!(rdr.read_u32_smart().unwrap(), 0x7FFF);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x80, 0x00, 0x80, 0x00]);
+    /// assert_eq!(rdr.read_u32_smart().unwrap(), 0x8000);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xC0, 0x00, 0x00, 0x00]);
+    /// assert_eq!(rdr.read_u32_smart().unwrap(), 0x40000000);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xFF, 0xFF, 0xFF, 0xFF]);
+    /// assert_eq!(rdr.read_u32_smart().unwrap(), 0x7FFFFFFF);
+    /// ```
+    #[inline]
+    fn read_u32_smart(&mut self) -> Result<u32> {
+        let peek = self.read_u8()?;
+        if peek & 128 == 0 {
+            Ok(((peek as u32 & 0x7F) << 8) | (self.read_u8()? as u32) & 0x7FFF)
+        } else {
+            Ok((((peek as u32 & 0x7F) << 24)
+                | ((self.read_u8()? as u32) << 16)
+                | ((self.read_u8()? as u32) << 8)
+                | (self.read_u8()? as u32))
+                & 0x7FFFFFFF)
+        }
+    }
+
     /// Reads an unsigned dword as little endian
     ///
     /// # Examples
@@ -484,6 +550,80 @@ pub trait ReadExt: Read {
     #[inline]
     fn read_i32(&mut self) -> Result<i32> {
         Ok(self.read_u32()? as i32)
+    }
+
+    /// Read an signed dword as a smart
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x00, 0x00]);
+    /// assert_eq!(rdr.read_i32_smart().unwrap(), -0x4000);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x40, 0x00]);
+    /// assert_eq!(rdr.read_i32_smart().unwrap(), 0);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x7F, 0xFF]);
+    /// assert_eq!(rdr.read_i32_smart().unwrap(), 0x3FFF);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0x80, 0x00, 0x00, 0x00]);
+    /// assert_eq!(rdr.read_i32_smart().unwrap(), -0x40000000);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xBF, 0xFF, 0xBF, 0xFF]);
+    /// assert_eq!(rdr.read_i32_smart().unwrap(), -0x4001);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xC0, 0x00, 0x40, 0x00]);
+    /// assert_eq!(rdr.read_i32_smart().unwrap(), 0x4000);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0xFF, 0xFF, 0xFF, 0xFF]);
+    /// assert_eq!(rdr.read_i32_smart().unwrap(), 0x3FFFFFFF);
+    /// ```
+    #[inline]
+    fn read_i32_smart(&mut self) -> Result<i32> {
+        let peek = self.read_u8()?;
+        if peek & 128 == 0 {
+            Ok((((peek as i32 & 0x7F) << 8) | (self.read_u8()? as i32) & 0x7FFF) - 0x4000)
+        } else {
+            Ok(((((peek as i32 & 0x7F) << 24)
+                | ((self.read_u8()? as i32) << 16)
+                | ((self.read_u8()? as i32) << 8)
+                | (self.read_u8()? as i32))
+                & 0x7FFFFFFF)
+                - 0x40000000)
+        }
     }
 
     /// Reads an signed dword as little endian
