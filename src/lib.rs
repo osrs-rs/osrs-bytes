@@ -26,6 +26,95 @@ pub trait ReadExt: Read {
         Ok(buf[0])
     }
 
+    /// Reads an unsigned byte add
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![125]);
+    /// assert_eq!(rdr.read_u8_add().unwrap(), 253)
+    /// ```
+    ///
+    /// ```rust
+    ///
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![128]);
+    /// assert_eq!(rdr.read_u8_add().unwrap(), 0)
+    /// ```
+    #[inline]
+    fn read_u8_add(&mut self) -> Result<u8> {
+        Ok(self.read_u8()?.wrapping_sub(128))
+    }
+
+    /// Reads an unsigned byte negate
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![128]);
+    /// assert_eq!(rdr.read_u8_neg().unwrap(), 128);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![127]);
+    /// assert_eq!(rdr.read_u8_neg().unwrap(), 129);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0]);
+    /// assert_eq!(rdr.read_u8_neg().unwrap(), 0);
+    /// ```
+    #[inline]
+    fn read_u8_neg(&mut self) -> Result<u8> {
+        Ok(0u8.wrapping_sub(self.read_u8()?))
+    }
+
+    /// Reads an unsigned byte sub
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![128]);
+    /// assert_eq!(rdr.read_u8_sub().unwrap(), 0);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![127]);
+    /// assert_eq!(rdr.read_u8_sub().unwrap(), 1);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![0]);
+    /// assert_eq!(rdr.read_u8_sub().unwrap(), 128);
+    /// ```
+    #[inline]
+    fn read_u8_sub(&mut self) -> Result<u8> {
+        Ok(128u8.wrapping_sub(self.read_u8()?))
+    }
+
     /// Reads a signed byte
     ///
     /// # Examples
@@ -41,6 +130,78 @@ pub trait ReadExt: Read {
     #[inline]
     fn read_i8(&mut self) -> Result<i8> {
         Ok(self.read_u8()? as i8)
+    }
+
+    /// Reads a signed byte add
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![125]);
+    /// assert_eq!(rdr.read_i8_add().unwrap(), -3);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![128]);
+    /// assert_eq!(rdr.read_i8_add().unwrap(), 0);
+    /// ```
+    #[inline]
+    fn read_i8_add(&mut self) -> Result<i8> {
+        Ok(self.read_u8_add()? as i8)
+    }
+
+    /// Reads a signed byte negate
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![128]);
+    /// assert_eq!(rdr.read_i8_neg().unwrap(), -128);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![42]);
+    /// assert_eq!(rdr.read_i8_neg().unwrap(), -42);
+    /// ```
+    #[inline]
+    fn read_i8_neg(&mut self) -> Result<i8> {
+        Ok(self.read_u8_neg()? as i8)
+    }
+
+    /// Reads a signed byte sub
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![128]);
+    /// assert_eq!(rdr.read_i8_sub().unwrap(), 0);
+    /// ```
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use osrs_bytes::ReadExt;
+    ///
+    /// let mut rdr = Cursor::new(vec![42]);
+    /// assert_eq!(rdr.read_i8_sub().unwrap(), 86);
+    /// ```
+    #[inline]
+    fn read_i8_sub(&mut self) -> Result<i8> {
+        Ok(self.read_u8_sub()? as i8)
     }
 
     /// Reads a bool
@@ -195,10 +356,10 @@ pub trait ReadExt: Read {
     /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![89, 66]);
-    /// assert_eq!(rdr.read_u16_le_add().unwrap(), 17113);
+    /// assert_eq!(rdr.read_u16_add_le().unwrap(), 17113);
     /// ```
     #[inline]
-    fn read_u16_le_add(&mut self) -> Result<u16> {
+    fn read_u16_add_le(&mut self) -> Result<u16> {
         Ok(((self.read_u8()?.wrapping_sub(128)) as u16) | ((self.read_u8()? as u16) << 8))
     }
 
@@ -330,11 +491,11 @@ pub trait ReadExt: Read {
     /// use osrs_bytes::ReadExt;
     ///
     /// let mut rdr = Cursor::new(vec![98, 255]);
-    /// assert_eq!(rdr.read_i16_le_add().unwrap(), -30);
+    /// assert_eq!(rdr.read_i16_add_le().unwrap(), -30);
     /// ```
     #[inline]
-    fn read_i16_le_add(&mut self) -> Result<i16> {
-        Ok(self.read_u16_le_add()? as i16)
+    fn read_i16_add_le(&mut self) -> Result<i16> {
+        Ok(self.read_u16_add_le()? as i16)
     }
 
     /// Reads an unsigned medium as big endian
@@ -766,6 +927,78 @@ pub trait WriteExt: Write {
         self.write_all(&[n])
     }
 
+    /// Writes an unsigned byte to the writer.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use osrs_bytes::WriteExt;
+    ///
+    /// let mut wtr = Vec::new();
+    /// wtr.write_u8_add(42).unwrap();
+    /// assert_eq!(wtr[0], 170);
+    /// ```
+    ///
+    /// ```rust
+    /// use osrs_bytes::WriteExt;
+    ///
+    /// let mut wtr = Vec::new();
+    /// wtr.write_u8_add(128).unwrap();
+    /// assert_eq!(wtr[0], 0);
+    /// ```
+    #[inline]
+    fn write_u8_add(&mut self, n: u8) -> Result<()> {
+        self.write_u8(n.wrapping_add(128))
+    }
+
+    /// Writes an unsigned byte to the writer.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use osrs_bytes::WriteExt;
+    ///
+    /// let mut wtr = Vec::new();
+    /// wtr.write_u8_neg(42).unwrap();
+    /// assert_eq!(wtr[0], 214);
+    /// ```
+    ///
+    /// ```rust
+    /// use osrs_bytes::WriteExt;
+    ///
+    /// let mut wtr = Vec::new();
+    /// wtr.write_u8_neg(0).unwrap();
+    /// assert_eq!(wtr[0], 0);
+    /// ```
+    #[inline]
+    fn write_u8_neg(&mut self, n: u8) -> Result<()> {
+        self.write_u8(0u8.wrapping_sub(n))
+    }
+
+    /// Writes an unsigned byte to the writer.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use osrs_bytes::WriteExt;
+    ///
+    /// let mut wtr = Vec::new();
+    /// wtr.write_u8_sub(42).unwrap();
+    /// assert_eq!(wtr[0], 86);
+    /// ```
+    ///
+    /// ```rust
+    /// use osrs_bytes::WriteExt;
+    ///
+    /// let mut wtr = Vec::new();
+    /// wtr.write_u8_sub(128).unwrap();
+    /// assert_eq!(wtr[0], 0);
+    /// ```
+    #[inline]
+    fn write_u8_sub(&mut self, n: u8) -> Result<()> {
+        self.write_u8(128u8.wrapping_sub(n))
+    }
+
     /// Writes an signed byte to the writer.
     ///
     /// Examples
@@ -795,7 +1028,7 @@ pub trait WriteExt: Write {
     /// ```
     #[inline]
     fn write_i8_sub(&mut self, n: i8) -> Result<()> {
-        self.write_u8(128 - n as u8)
+        self.write_u8_sub(n as u8)
     }
 
     /// Writes the byte and adds 128.
@@ -811,7 +1044,7 @@ pub trait WriteExt: Write {
     /// ```
     #[inline]
     fn write_i8_add(&mut self, n: i8) -> Result<()> {
-        self.write_u8(n as u8 + 128)
+        self.write_u8_add(n as u8)
     }
 
     /// Writes a negated byte to the writer.
@@ -827,7 +1060,7 @@ pub trait WriteExt: Write {
     /// ```
     #[inline]
     fn write_i8_neg(&mut self, n: i8) -> Result<()> {
-        self.write_u8(-n as u8)
+        self.write_u8_neg(n as u8)
     }
 
     /// Writes a bool to the writer.
@@ -980,13 +1213,13 @@ pub trait WriteExt: Write {
     /// use osrs_bytes::WriteExt;
     ///
     /// let mut wtr = Vec::new();
-    /// wtr.write_i16_le_add(-12632).unwrap();
+    /// wtr.write_i16_add_le(-12632).unwrap();
     /// assert_eq!(wtr[0], 40);
     /// assert_eq!(wtr[1], 206);
     /// ```
     ///
     #[inline]
-    fn write_i16_le_add(&mut self, n: i16) -> Result<()> {
+    fn write_i16_add_le(&mut self, n: i16) -> Result<()> {
         self.write_i8((n + 128) as i8)?;
         self.write_i8((n >> 8) as i8)
     }
@@ -1205,7 +1438,7 @@ pub trait WriteExt: Write {
     #[inline]
     fn write_bytes_reversed_add(&mut self, buf: &[u8]) -> Result<()> {
         for b in buf.iter().rev() {
-            self.write_i8(b.wrapping_add((i8::MAX as u8) + 1) as i8)?;
+            self.write_u8_add(*b)?;
         }
         Ok(())
     }
