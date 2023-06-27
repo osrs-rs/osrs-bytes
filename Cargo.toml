@@ -1,6 +1,6 @@
 [package]
 name = "osrs-bytes"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 description = "Traits for working with bytes in Oldschool RuneScape"
 repository = "https://github.com/osrs-rs/osrs-bytes"

@@ -1412,8 +1412,8 @@ pub trait WriteExt: Write {
     /// ```
     ///
     #[inline]
-    fn write_string_cp1252(&mut self, s: &str) -> Result<()> {
-        for b in s.as_bytes() {
+    fn write_string_cp1252<T: AsRef<str>>(&mut self, s: T) -> Result<()> {
+        for b in s.as_ref().as_bytes() {
             self.write_u8(*b)?;
         }
         self.write_i8(0)
